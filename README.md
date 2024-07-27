@@ -18,6 +18,7 @@ pip install -r requirements.txt
 
 Start the Mavlink Simulator:
 ```bash
+source ./.venv/bin/activate
 python mavlink_simulator.py
 ```
 
@@ -26,7 +27,9 @@ Run the socat Command:
 socat -u UDP-RECV:14550 TCP-LISTEN:14551
 ```
 
-Run the Python Script:
+In another terminal, run the Python Script:
 ```bash
+source ./.venv/bin/activate
 python read_mavlink_messages.py
 ```
+![alt text](images/read_mavlink_messages_out.png)
