@@ -33,3 +33,7 @@ source ./.venv/bin/activate
 python read_mavlink_messages.py
 ```
 ![alt text](images/read_mavlink_messages_out.png)
+
+## References
+* https://www.samba.org/tridge/UAV/pymavlink/apidocs/mavlink.MAVLink.html
+* https://mavlink.io/en/mavgen_python/

@@ -1,18 +1,28 @@
 import random
 import time
 from pymavlink import mavutil
+import logging
+import sys
+
+# Initialize logger
+logFormatter = logging.Formatter("%(asctime)s [%(threadName)-12.12s] [%(levelname)-5.5s]  %(message)s")
+logger = logging.getLogger(__name__)
 
 # Initialize the connection to the Mavlink system
 master = mavutil.mavlink_connection('udpout:localhost:14550')
 
 # Function to create and send random heartbeat messages
 def send_random_heartbeat():
-    type = random.randint(0, 255)
+    #type = random.randint(0, 255)
+    #mavlink.MAV_TYPE_QUADROTOR
+    veh_type = mavutil.mavlink.MAV_TYPE_QUADROTOR
     autopilot = random.randint(0, 255)
     base_mode = random.randint(0, 255)
     custom_mode = random.randint(0, 4294967295)
     system_status = random.randint(0, 255)
-    master.mav.heartbeat_send(type, autopilot, base_mode, custom_mode, system_status)
+
+    logger.info("Heartbeat => Type: %d, Autopilot Type: %d, Base Mode: %d, Custom Mode: %d, System Status: %d" % (veh_type, autopilot, base_mode, custom_mode, system_status))
+    master.mav.heartbeat_send(veh_type, autopilot, base_mode, custom_mode, system_status)
 
 # Function to create and send random GPS messages
 def send_random_gps_raw_int():
@@ -26,6 +36,8 @@ def send_random_gps_raw_int():
     vel = random.randint(0, 65535)
     cog = random.randint(0, 65535)
     satellites_visible = random.randint(0, 255)
+    
+    logger.info("GPS Data")
     master.mav.gps_raw_int_send(time_usec, fix_type, lat, lon, alt, eph, epv, vel, cog, satellites_visible)
 
 # Function to create and send random attitude messages
@@ -37,10 +49,18 @@ def send_random_attitude():
     rollspeed = random.uniform(-3.14, 3.14)
     pitchspeed = random.uniform(-3.14, 3.14)
     yawspeed = random.uniform(-3.14, 3.14)
+    
+    logger.info("Altitude Data")
     master.mav.attitude_send(time_boot_ms, roll, pitch, yaw, rollspeed, pitchspeed, yawspeed)
 
 # Main function to continuously send random messages
 def main():
+    logging.basicConfig(filename='mavlink-sim.log', level=logging.INFO)
+    consoleHandler = logging.StreamHandler()
+    consoleHandler.setFormatter(logFormatter)
+    logger.addHandler(consoleHandler)
+
+    logger.info('Start sending random messages')
     while True:
         send_random_heartbeat()
         send_random_gps_raw_int()
